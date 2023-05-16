@@ -5,13 +5,13 @@ A json model creator for client and server side.
 ## Install
 
 ```bash
-yarn add -D json-model
+yarn add -D @spiderdan98/json-model
 ```
 
 ## Example model
 
 ```ts
-import createModel from "json-model";
+import createModel from "@spiderdan98/json-model";
 import Relationship from "/path/to/relationship/model";
 
 export const USER_TYPE = "users";
@@ -34,6 +34,7 @@ export default User;
 ## Example model usage
 
 ```ts 
+import { setModels } from "@spiderdan98/json-model";
 import Relationship from "/path/to/relationship/model";
 import User from "/path/to/user/model";
 

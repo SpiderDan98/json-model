@@ -1,5 +1,5 @@
 {
-  "name": "json-model",
+  "name": "@spiderdan98/json-model",
   "version": "1.0.0",
   "type": "module",
   "description": "A json model creator for client and server side.",
