@@ -1,0 +1,42 @@
+{
+  "name": "json-model",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A json model creator for client and server side.",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "json",
+    "model",
+    "client",
+    "server",
+    "typescript",
+    "small"
+  ],
+  "author": "Daniel Kemna <danielkemna@t-online.de>",
+  "main": "./dist/json-model.umd.cjs",
+  "module": "./dist/json-model.js",
+  "types": "./dist/index.d.ts",
+  "readme": "README.md",
+  "exports": {
+    ".": {
+      "import": "./dist/json-model.js",
+      "require": "./dist/json-model.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.5",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-dts": "^2.3.0"
+  },
+  "dependencies": {
+    "jsona": "^1.11.0"
+  }
+}

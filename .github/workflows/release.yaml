@@ -1,0 +1,25 @@
+name: Publish Package to npm
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Update version
+        run: echo "`jq '.version="${{github.ref_name}}"' package.json`" > package.json
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install packages
+        run: yarn install
+      - name: Build package
+        run: yarn build
+      - name: Login on npm
+        run: npm config set _authToken=${{ secrets.NPM_TOKEN }}
+      - name: Publish on npm
+        run: npm publish
