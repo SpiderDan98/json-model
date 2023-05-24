@@ -53,9 +53,15 @@ setModels({
   relationship: Relationship,
 });
 
-const user = new User(json);
+const user = User.create(json);
 
-console.log(user.name) // SpiderDan98
-console.log(user.lowerName) // spiderdan98
-console.log(user.relationship) // Relationship model
+console.log(user.name); // SpiderDan98
+console.log(user.lowerName); // spiderdan98
+console.log(user.relationship); // Relationship model
+
+const users = User.create([json]);
+
+console.log(users[0].name); // SpiderDan98
+console.log(users[0].lowerName); // spiderdan98
+console.log(users[0].relationship); // Relationship model
 ```
