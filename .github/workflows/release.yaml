@@ -22,4 +22,4 @@ jobs:
       - name: Login on npm
         run: npm config set _authToken=${{ secrets.NPM_TOKEN }}
       - name: Publish on npm
-        run: npm publish
+        run: npm publish --access public
