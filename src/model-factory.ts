@@ -22,22 +22,22 @@ export const setGlobalConfig = (newConfig: Config) =>
 
 export const getGlobalConfig = () => globalConfig;
 
-const resolveConfig = (currentConfig: Config, ...config: ConfigDefinition[]) =>
+const resolveConfig = (baseConfig: Config, ...config: ConfigDefinition[]) =>
   config.reduce<Config>(
-    (currentConfig, configDefinition) =>
+    (baseConfig, configDefinition) =>
       typeof configDefinition === "function"
-        ? configDefinition(currentConfig)
+        ? configDefinition(baseConfig)
         : {
-            ...currentConfig,
+            ...baseConfig,
             ...configDefinition,
           },
-    currentConfig
+    baseConfig
   );
 
 export const createModel = <Data extends object = {}>(
   modelConfig: ConfigDefinition = {}
 ) =>
-  class {
+  class BaseModel {
     constructor(data: Data, localConfig: ConfigDefinition = {}) {
       const {
         resolveModelName,
@@ -66,9 +66,7 @@ export const createModel = <Data extends object = {}>(
 
         Object.defineProperty(this, relationship, {
           get() {
-            const relationModel = isMany
-              ? relationData.map((relation) => new RelationshipModel(relation))
-              : new RelationshipModel(relationData as object);
+            const relationModel = RelationshipModel.create(relationData);
 
             Object.defineProperty(this, relationship, {
               value: relationModel,
@@ -82,6 +80,18 @@ export const createModel = <Data extends object = {}>(
           enumerable: true,
         });
       }
+    }
+
+    static create<T extends BaseModel>(
+      this: new (...args: any[]) => T,
+      data: Data,
+      localConfig?: ConfigDefinition
+    ) {
+      if (Array.isArray(data)) {
+        return data.map((data) => new this(data, localConfig));
+      }
+
+      return new this(data, localConfig);
     }
   } as Model<Data>;
 

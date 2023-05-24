@@ -13,4 +13,13 @@ export declare type ConfigDefinition =
 
 export interface Model<Output extends object = {}> {
   new (data: Record<string, unknown>, localConfig?: ConfigDefinition): Output;
+
+  static create<
+    T extends object,
+    Data extends Record<string, unknown> | Record<string, unknown>[] = {}
+  >(
+    this: new (...args: any[]) => T,
+    data: Data,
+    localConfig?: ConfigDefinition = {}
+  ): Data extends object[] ? (Output & T)[] : Output & T;
 }
