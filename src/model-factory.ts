@@ -59,6 +59,10 @@ export const createModel = <Data extends object = {}>(
         const RelationshipModel =
           models[resolveModelName(isMany ? relationData?.[0] : relationData)];
 
+        if (isMany ? !relationData.length : !relationData) {
+          return;
+        }
+
         if (!RelationshipModel) {
           console.error(`Model ${relationship} not registred.`);
           return;

@@ -41,7 +41,7 @@ import User from "/path/to/user/model";
 const json = {
   type: "users",
   name: "SpiderDan98",
-  email: "danielkemna@t-online.de",
+  email: "test@example.com",
   relationshipNames: ["relationship"],
   relationship: {
     ...
@@ -53,7 +53,10 @@ setModels({
   relationship: Relationship,
 });
 
-const user = User.create(json);
+const user = User.create(json, {
+  // Register relationship models on create
+  relationship: Relationship,
+});
 
 console.log(user.name); // SpiderDan98
 console.log(user.lowerName); // spiderdan98
