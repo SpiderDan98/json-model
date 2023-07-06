@@ -70,7 +70,9 @@ export const createModel = <Data extends object = {}>(
 
         Object.defineProperty(this, relationship, {
           get() {
-            const relationModel = RelationshipModel.create(relationData);
+            const relationModel = RelationshipModel.create(
+              relationData as Record<string, unknown>
+            );
 
             Object.defineProperty(this, relationship, {
               value: relationModel,
