@@ -22,7 +22,8 @@
   "exports": {
     ".": {
       "import": "./dist/json-model.js",
-      "require": "./dist/json-model.umd.cjs"
+      "require": "./dist/json-model.umd.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {

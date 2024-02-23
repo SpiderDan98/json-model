@@ -1,7 +1,34 @@
 import forgetKeys from "./lib/forgetKeys";
-import type { Config, ConfigDefinition, Model } from "./types";
+import type {
+  CastFunction,
+  Config,
+  ConfigDefinition,
+  DefaultCasts,
+  Model,
+} from "./types";
+
+const defaultCasts: Record<DefaultCasts, CastFunction> = {
+  date: (date) =>
+    typeof date === "string" || typeof date === "number"
+      ? new Date(date)
+      : date,
+  float: (float) =>
+    typeof float === "number"
+      ? float
+      : typeof float === "string"
+      ? parseFloat(float)
+      : float,
+  int: (int) =>
+    typeof int === "number"
+      ? int
+      : typeof int === "string"
+      ? parseInt(int)
+      : int,
+  string: (string) => (!string ? string : String(string)),
+};
 
 let globalConfig: Config = {
+  casts: {},
   models: {},
   ignoreAttributes: [],
   resolveModelName: (model) => (model as any)?.type || "",
@@ -35,15 +62,16 @@ const resolveConfig = (baseConfig: Config, ...config: ConfigDefinition[]) =>
   );
 
 export const createModel = <Data extends object = {}>(
-  modelConfig: ConfigDefinition = {}
+  modelConfig: ConfigDefinition<keyof Data> = {}
 ) =>
   class BaseModel {
-    constructor(data: Data, localConfig: ConfigDefinition = {}) {
+    constructor(data: Data, localConfig: ConfigDefinition<keyof Data> = {}) {
       const {
         resolveModelName,
         resolveRelationshipNames,
         ignoreAttributes,
         models,
+        casts,
       } = resolveConfig(globalConfig, modelConfig, localConfig);
       const relationships = resolveRelationshipNames(data);
       const attributes = forgetKeys(data, [
@@ -51,20 +79,32 @@ export const createModel = <Data extends object = {}>(
         ...ignoreAttributes,
       ]);
 
+      for (const [key, cast] of Object.entries(casts)) {
+        const resolvedCast =
+          typeof cast === "string" ? defaultCasts[cast] : cast || (() => null);
+        if ((attributes as any)[key]) {
+          (attributes as any)[key] = resolvedCast((attributes as any)[key]);
+        }
+      }
+
       Object.assign(this, attributes);
 
       for (const relationship of relationships) {
         const relationData = data[relationship as keyof Data];
         const isMany = Array.isArray(relationData);
         const RelationshipModel =
-          models[resolveModelName(isMany ? relationData?.[0] : relationData)];
+          models[
+            resolveModelName(
+              isMany ? relationData?.[0] : relationData
+            ) as string
+          ];
 
         if (isMany ? !relationData.length : !relationData) {
           return;
         }
 
         if (!RelationshipModel) {
-          console.error(`Model ${relationship} not registred.`);
+          console.error(`Model ${relationship as string} not registred.`);
           return;
         }
 
