@@ -81,9 +81,9 @@ export const createModel = <Data extends object = {}>(
 
       for (const [key, cast] of Object.entries(casts)) {
         const resolvedCast =
-          typeof cast === "string" ? defaultCasts[cast] : cast || (() => null);
+          typeof cast === "string" ? defaultCasts[cast] : cast;
         if ((attributes as any)[key]) {
-          (attributes as any)[key] = resolvedCast((attributes as any)[key]);
+          (attributes as any)[key] = resolvedCast?.((attributes as any)[key]);
         }
       }
 
